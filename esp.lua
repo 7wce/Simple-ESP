@@ -4,6 +4,7 @@
 local ESPModule = {}
 
 local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 
@@ -11,7 +12,9 @@ local settings = {
     BoxThickness = 2,
     BoxTransparency = 1,
     RainbowSpeed = 0.5,
-    ShowNames = true
+    ShowNames = true,
+    TeamEsp = true,
+    SelfEsp = false
 }
 
 local playerBoxes = {}
@@ -21,7 +24,6 @@ local hue = 0
 local enabled = false
 local connection = nil
 
--- Private functions
 local function calculatePlayerSize(player)
     local character = player.Character
     if not character then return nil end
@@ -155,9 +157,26 @@ local function updateESP()
         local box = playerBoxes[player]
         local nameTag = playerNames[player]
 
+        if settings.TeamEsp == false then
+            if player.Team == LocalPlayer.Team then
+                box.Visible = false
+                nameTag.Visible = false
+                continue
+            end
+        end
+
+        if settings.SelfEsp == false then
+            if player == LocalPlayer then
+                box.Visible = false
+                nameTag.Visible = false
+                continue
+            end
+        end
+
         if box then
             box.Color = currentColor
         end
+
         if nameTag then
             nameTag.Color = currentColor
         end
@@ -311,5 +330,7 @@ function ESPModule:cleanup()
     playerBoxSizes = {}
     enabled = false
 end
+
+ESPModule:espToggle(true)
 
 return ESPModule
