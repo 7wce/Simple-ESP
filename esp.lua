@@ -322,6 +322,4 @@ function ESPModule:cleanup()
     enabled = false
 end
 
-ESPModule:espToggle(true)
-
 return ESPModule
