@@ -286,12 +286,8 @@ function ESPModule:espToggle(state)
     end
 end
 
-function ESPModule:updateSettings(newSettings)
-    for key, value in pairs(newSettings) do
-        if settings[key] ~= nil then
-            settings[key] = value
-        end
-    end
+function ESPModule:updateSettings(newSettings, value)
+    settings[newSettings] = value
 end
 
 function ESPModule:getSettings()
