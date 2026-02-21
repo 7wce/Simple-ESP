@@ -1,6 +1,3 @@
--- This does have some bugs so please contact me if you encounter one!!
--- Discord: 1ivt
-
 local ESPModule = {}
 
 local Players = game:GetService("Players")
@@ -157,22 +154,6 @@ local function updateESP()
         local box = playerBoxes[player]
         local nameTag = playerNames[player]
 
-        if settings.TeamEsp == false then
-            if player.Team == LocalPlayer.Team then
-                box.Visible = false
-                nameTag.Visible = false
-                continue
-            end
-        end
-
-        if settings.SelfEsp == false then
-            if player == LocalPlayer then
-                box.Visible = false
-                nameTag.Visible = false
-                continue
-            end
-        end
-
         if box then
             box.Color = currentColor
         end
@@ -214,9 +195,23 @@ local function updateESP()
 
                     box.Size = Vector2.new(width, height)
                     box.Position = Vector2.new(boxX - width / 2, boxY)
-                    box.Visible = true
-
-                    if settings.ShowNames then
+                    
+                    local shouldShowBox = true
+                    local shouldShowName = settings.ShowNames
+                    
+                    if settings.TeamEsp == false and player.Team == LocalPlayer.Team then
+                        shouldShowBox = false
+                        shouldShowName = false
+                    end
+                    
+                    if settings.SelfEsp == false and player == LocalPlayer then
+                        shouldShowBox = false
+                        shouldShowName = false
+                    end
+                    
+                    box.Visible = shouldShowBox
+                    
+                    if shouldShowBox and shouldShowName then
                         nameTag.Text = player.Name
                         nameTag.Position = Vector2.new(boxX, boxTop - 20)
                         nameTag.Visible = true
@@ -326,5 +321,7 @@ function ESPModule:cleanup()
     playerBoxSizes = {}
     enabled = false
 end
+
+ESPModule:espToggle(true)
 
 return ESPModule
